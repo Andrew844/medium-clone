@@ -1,0 +1,46 @@
+import {CreateArticleStateInterface} from './types/createArticleState.interface';
+import {Action, createReducer, on} from '@ngrx/store';
+import {
+  createArticleAction,
+  createArticleFailureAction,
+  createArticleSuccessAction,
+} from './actions/createArticle.action';
+
+const initialState: CreateArticleStateInterface = {
+  isSubmitting: false,
+  validationErrors: null,
+};
+
+const createArticleReducer = createReducer(
+  initialState,
+  on(
+    createArticleAction,
+    (state): CreateArticleStateInterface => ({
+      ...state,
+      isSubmitting: true,
+      validationErrors: null,
+    })
+  ),
+  on(
+    createArticleSuccessAction,
+    (state): CreateArticleStateInterface => ({
+      ...state,
+      isSubmitting: false,
+    })
+  ),
+  on(
+    createArticleFailureAction,
+    (state, action): CreateArticleStateInterface => ({
+      ...state,
+      isSubmitting: false,
+      validationErrors: action.errors,
+    })
+  )
+);
+
+export function reducers(
+  state: CreateArticleStateInterface,
+  action: Action
+): any {
+  return createArticleReducer(state, action);
+}
